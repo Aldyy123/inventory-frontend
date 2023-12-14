@@ -97,10 +97,6 @@ const Orders = () => {
             }
 
 
-            orderData?.orders.forEach(async (item) => {
-                await createCart(resultCreateOrder.payload.data, item)
-            })
-
             const resultCreateOrder = await dispatch(orders.createOrderByUser(dataOrder))
             if (resultCreateOrder.payload?.data) {
                 if (query.get('type') === 'cart') {
