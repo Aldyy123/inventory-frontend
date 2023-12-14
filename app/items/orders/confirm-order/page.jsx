@@ -7,9 +7,15 @@ import {useRouter, useSearchParams} from "next/navigation";
 import {useDispatch, useSelector} from "react-redux";
 import {clearOrder} from "../../../stores/reducer/addOrderSlice";
 import {carts, orders} from "../../../stores/thunk";
+import {clearCart} from "../../../stores/reducer/addCartSlice";
 
 const Orders = () => {
-    const orderData = useSelector((state) => state.addOrder);
+    const {orderData, cartData} = useSelector((state) => ({
+        orderData: state.addOrder,
+        cartData: state.addCart,
+    }));
+
+
     const dispatch = useDispatch();
     const query = useSearchParams()
     const router = useRouter()
@@ -40,7 +46,7 @@ const Orders = () => {
                 },
             }
             const result = await dispatch(carts.updateCart(data))
-            if(result.payload?.data?.data){
+            if (result.payload?.data?.data) {
                 Messaege("Success", "Order Created", "success");
                 router.push("/items/orders");
             }
@@ -64,9 +70,11 @@ const Orders = () => {
                 },
             }
 
+            console.log(data)
+
             const result = await dispatch(carts.createCart(data))
 
-            if(result.payload?.data?.data){
+            if (result.payload?.data?.data) {
                 Messaege("Success", "Order Created", "success");
                 router.push("/items/orders");
             }
@@ -85,16 +93,19 @@ const Orders = () => {
                     activity: selectedOption,
                     division: selectedOption2,
                     machine: machine,
-                    LocationId: orderData?.orders?.map((item) => item?.locationId)?.[0],
-                    ProductId: orderData?.orders?.map((item) => item?.id)?.[0],
                 }
             }
+
+
+            orderData?.orders.forEach(async (item) => {
+                await createCart(resultCreateOrder.payload.data, item)
+            })
 
             const resultCreateOrder = await dispatch(orders.createOrderByUser(dataOrder))
             if (resultCreateOrder.payload?.data) {
                 if (query.get('type') === 'cart') {
-                    orderData?.orders.forEach(async (item) => {
-                        await updateOrderIdCart(resultCreateOrder, item)
+                    cartData?.carts.forEach(async (item) => {
+                        await createCart(resultCreateOrder.payload.data, item)
                     })
 
                 } else {
@@ -105,6 +116,7 @@ const Orders = () => {
             }
 
             dispatch(clearOrder());
+            dispatch(clearCart());
         } catch (e) {
             Messaege("Error", e.message, "error");
         }
@@ -260,7 +272,7 @@ const Orders = () => {
                             </tr>
                             </thead>
                             <tbody>
-                            {orderData?.orders?.map((item, index) => (
+                            {query.get('type') === 'order' && orderData?.orders?.map((item, index) => (
                                 <tr key={index}>
                                     <td>{item?.name}</td>
                                     <td>{item?.quantity}</td>
@@ -268,6 +280,16 @@ const Orders = () => {
                                     <td>{item?.uom}</td>
                                 </tr>
                             ))}
+
+                            {query.get('type') === 'cart' && cartData?.carts?.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item?.name}</td>
+                                    <td>{item?.quantity}</td>
+                                    <td>{item?.location}</td>
+                                    <td>{item?.uom}</td>
+                                </tr>
+                            ))}
+
                             </tbody>
                         </table>
 

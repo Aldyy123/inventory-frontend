@@ -4,8 +4,10 @@ import {useParams, useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Messaege} from "../../../helper/Message";
-import {locations, products} from "../../../stores/thunk";
+import {products} from "../../../stores/thunk";
 import {addOrder} from "../../../stores/reducer/addOrderSlice";
+import {addCart} from "../../../stores/reducer/addCartSlice";
+
 
 const Page = () => {
     const router = useRouter();
@@ -36,6 +38,7 @@ const Page = () => {
     };
 
     const addTocart = async () => {
+        dispatch(addCart(orderItems));
         router.push("/items/orders/confirm-order?type=cart");
     };
 

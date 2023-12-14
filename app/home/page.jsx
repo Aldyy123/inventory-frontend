@@ -205,7 +205,7 @@ const Page = () => {
                             <td>{moment(item.createdAt).format("MMMM Do YYYY")}</td>
                             {localStorage.getItem("role") === "admin" ? (<></>) : (<td>
                                 <span
-                                    className={`${item.status === "out_stock" ? "badge badge-success" : "badge badge-error"}`}
+                                    className={`${item.status === "out_stock" ? "badge badge-error" : "badge badge-success"}`}
                                 >
                           {item.status}
                         </span>
