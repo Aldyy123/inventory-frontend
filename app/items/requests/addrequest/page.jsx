@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { postStoks, register } from "../../../api";
 import Layouts from "../../../components/layouts";
 import Link from "next/link";
@@ -7,24 +7,23 @@ import { Messaege } from "../../../helper/Message";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addRequest } from "../../../stores/thunk/requests";
-import { getAllProducts } from "../../../stores/thunk/products";
+import { getAllProducts, getProducyById } from "../../../stores/thunk/products";
 import { getAllLocations } from "../../../stores/thunk/locations";
 
 const Employee = () => {
   const router = useRouter();
   const [productId, setProductId] = useState(0);
   const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState();
   const [uom, setuom] = useState("");
   const [qty, setqty] = useState(0);
   const [locationId, setlocationId] = useState(0);
-  const [locations, setLocations] = useState([]);
   const dispatch = useDispatch();
 
   const userId = localStorage.getItem("iduser");
 
   useEffect(() => {
     fetchProducts();
-    fetchLocation();
   }, []);
 
   const fetchProducts = async () => {
@@ -36,14 +35,18 @@ const Employee = () => {
     }
   };
 
-  const fetchLocation = async () => {
+  const fetchDetailProduct = useCallback(async () => {
     try {
-      const response = await dispatch(getAllLocations());
-      setLocations(response.payload.data.data);
+      const response = await dispatch(getProducyById(productId));
+      setProduct(response.payload.data.data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
-  };
+  }, [dispatch, productId]);
+
+  useEffect(() => {
+    fetchDetailProduct();
+  }, [fetchDetailProduct]);
 
   const addRequestData = async () => {
     try {
@@ -70,6 +73,8 @@ const Employee = () => {
     }
   };
 
+  console.log(product);
+
   return (
     <Layouts>
       <div className="container">
@@ -83,7 +88,11 @@ const Employee = () => {
                 className="form-select form-select-lg"
                 aria-label=".form-select-lg example"
                 value={productId}
-                onChange={(e) => setProductId(e.target.value)}
+                onChange={(e) => {
+                  setProductId(e.target.value);
+                  fetchDetailProduct();
+                  console.log("target", e.target.value);
+                }}
               >
                 <option value="" selected>
                   Select Product
@@ -124,7 +133,7 @@ const Employee = () => {
                   <option value="" selected>
                     Select Locations
                   </option>
-                  {locations?.map((location) => (
+                  {product?.Locations.map((location) => (
                     <option key={location.id} value={location.id}>
                       {location.name}
                     </option>
