@@ -5,10 +5,10 @@ import { useSelector } from "react-redux";
 
 const Page = () => {
   const router = useRouter();
-  const cartRedux = useSelector((state) => state.addCart.cart);
+  const cartRedux = useSelector((state) => state.addCart);
   console.log(cartRedux, "test");
   const updateStockItems = async () => {
-    router.push("/home");
+    router.push("/items/orders/confirm-order?type=cart");
   };
   return (
     <Layouts>
@@ -29,13 +29,18 @@ const Page = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>{cartRedux.name}</td>
-                  <td>{cartRedux.category}</td>
-                  <td>{cartRedux.qty}</td>
-                  <td>{cartRedux.uom}</td>
-                  <td>{cartRedux.location}</td>
-                </tr>
+                {cartRedux?.carts.map((cart) => {
+                  console.log("item", cart);
+                  return (
+                    <tr key={cart.id}>
+                      <td>{cart.name}</td>
+                      <td>{cart.category}</td>
+                      <td>{cart.quantity}</td>
+                      <td>{cart.uom}</td>
+                      <td>{cart.location}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
             <div style={{ width: "400", margin: "auto" }}>

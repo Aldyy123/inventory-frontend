@@ -103,7 +103,7 @@ const DetailOrder = () => {
                 {detailOrder?.Carts?.map((item) => (
                   <tr key={item.id}>
                     {/* <td>{detailOrder?.Product?.category}</td> */}
-                    <td>{item.quantity}</td>
+                    <td>{item?.quantity}</td>
                     <td>{item?.uom}</td>
                     <td>{moment(item.requestDate).format("YYYY-MM-DD")}</td>
                     <td>{item?.Location?.name}</td>
