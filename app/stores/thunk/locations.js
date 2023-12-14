@@ -10,4 +10,18 @@ const getAllLocations = createAsyncThunk("locations/getLocations", async () => {
   }
 });
 
-export { getAllLocations };
+const updateLocation = createAsyncThunk(
+    "locations/updateLocation",
+    async (payload) => {
+        try {
+        return await axios.put(
+            `${API.API_URL}/locations/${payload.id}`,
+            payload.data
+        );
+        } catch (e) {
+        return e;
+        }
+    }
+)
+
+export { getAllLocations, updateLocation };

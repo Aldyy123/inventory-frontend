@@ -5,7 +5,7 @@ import {useParams} from "next/navigation";
 import {useEffect, useState} from "react";
 import {Messaege} from "../../../helper/Message";
 import {useDispatch} from "react-redux";
-import {products, requests} from "../../../stores/thunk";
+import {locations, requests} from "../../../stores/thunk";
 
 const Page = () => {
     const router = useRouter();
@@ -48,10 +48,10 @@ const Page = () => {
 
     const updateStockItems = async () => {
         try {
-            const resultProduct = await dispatch(products.updateProduct({
-                id: detailRequest?.ProductId,
+            const resultProduct = await dispatch(locations.updateLocation({
+                id: detailRequest?.LocationId,
                 data: {
-                    stock: parseInt(detailRequest?.Product?.stock) + parseInt(qty),
+                    qty: parseInt(detailRequest?.Location?.qty) + parseInt(qty),
                 },
             }))
 

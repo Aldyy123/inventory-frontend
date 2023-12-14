@@ -17,7 +17,6 @@ const DetailOrder = () => {
         (async () => {
             const orderDetail = await dispatch(orders.getOrderByOrderId(searchParams.id))
             if (orderDetail.payload.data) {
-                console.log(orderDetail.payload)
                 setDetailOrder(orderDetail.payload.data.data)
             }
         })()
@@ -37,6 +36,7 @@ const DetailOrder = () => {
          alert(error.response.data.message)
         }
     }
+
 
     return (<Layouts>
         <div className="container">
@@ -104,7 +104,7 @@ const DetailOrder = () => {
                                 <td>{item.quantity}</td>
                                 <td>{detailOrder?.Product?.uom}</td>
                                 <td>{moment(item.requestDate).format('YYYY-MM-DD')}</td>
-                                <td>{detailOrder?.Location?.name}</td>
+                                <td>{item?.Location?.name}</td>
                             </tr>
                         )))}
                         </tbody>

@@ -17,10 +17,29 @@ const Page = () => {
     const getProductById = async () => {
         try {
             const resultProduct = await dispatch(products.getProducyById(params.id))
-            console.log(resultProduct.payload)
 
             if (resultProduct.payload?.data) {
                 setData(resultProduct.payload.data.data)
+                setLocationData(resultProduct.payload.data.data?.Locations)
+            }
+        } catch (e) {
+            Messaege('Error', e.message, 'error')
+        }
+    }
+
+    const submitUpdateQty = async () => {
+        try {
+            const result = await dispatch(locations.updateLocation({
+                id: params.id,
+                data: {
+                    location_id: data?.Location?.id,
+                    qty: 1,
+                }
+            }))
+
+            if (result.payload?.data) {
+                Messaege('Success', 'Success update stock', 'success')
+                router.push('/items/stock')
             }
         } catch (e) {
             Messaege('Error', e.message, 'error')
@@ -40,7 +59,6 @@ const Page = () => {
 
     useEffect(() => {
         getProductById()
-        getAllLocation()
     }, []);
 
     return (<Layouts>
@@ -49,7 +67,6 @@ const Page = () => {
                 <h1>{data?.name}</h1>
                 <div className="card">
                     <h2 className="mt-5 text-center">Edit Stock</h2>
-
 
                     <table>
                         <thead>
@@ -81,7 +98,7 @@ const Page = () => {
                     </table>
 
                     <div>
-                        <label htmlFor="" className="mr-3" style={{display: "block"}}>
+                        <label className="mr-3" style={{display: "block"}}>
                             Location
                         </label>
                         <select
@@ -91,11 +108,11 @@ const Page = () => {
                             style={{width: "200px", padding: "5px"}}
                         >
                             {locationData.map((item, index) => (
-                                <option value="Mitra Utama" key={item.id}>{item.name}</option>))}
+                                <option value={item.name} key={item.id}>{item.name}</option>))}
                         </select>
                     </div>
 
-                    <button type="button" className="mt-5 input-stock-btn">
+                    <button type="button" onClick={submitUpdateQty} className="mt-5 input-stock-btn">
                         Update
                     </button>
                 </div>

@@ -21,27 +21,19 @@ const Page = () => {
     const handleSelectChange = (event) => {
         const selectedValue = event.target.value;
 
+        const locationFilter = locationData.filter((item) => item.name === selectedValue)?.[0]
+
         const orderItemsList = [...orderItems]
         orderItemsList.push({
             quantity: qty,
-            location: selectedValue,
+            location: locationFilter?.name,
+            locationId: locationFilter?.id,
             ...data
         })
 
         setOrderItems(orderItemsList)
         setQty('')
     };
-
-    const getAllLocation = async () => {
-        try {
-            const result = await dispatch(locations.getAllLocations())
-            if (result.payload?.data?.data) {
-                setLocationData(result.payload.data.data)
-            }
-        } catch (e) {
-            Messaege("Error", e.message, "error");
-        }
-    }
 
     const addTocart = async () => {
         router.push("/items/orders/confirm-order?type=cart");
@@ -57,6 +49,7 @@ const Page = () => {
             const product = await dispatch(products.getProducyById(params.id))
             if (product.payload?.data?.data) {
                 setData(product.payload.data.data)
+                setLocationData(product.payload.data.data?.Locations)
             }
         } catch (e) {
             Messaege('Error', e.message, 'error')
@@ -65,7 +58,6 @@ const Page = () => {
 
     useEffect(() => {
         getProductById();
-        getAllLocation()
     }, []);
 
     return (

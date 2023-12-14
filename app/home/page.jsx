@@ -30,7 +30,28 @@ const Page = () => {
         const productsResult = await dispatch(products.getAllProducts({
             filter: 'zero'
         }))
-        setDataProducts(productsResult.payload.data.data)
+        if (productsResult?.payload?.data) {
+            tidyDataProduct(productsResult.payload.data.data)
+        }
+    }
+
+    const tidyDataProduct = (products) => {
+        const productsArray = []
+        products.forEach((product) => {
+            product.Locations.forEach((location) => {
+                const productCopy = {
+                    productId: product.id,
+                    name: product.name,
+                    category: product.category,
+                    uom: product.uom,
+                    location: location.name,
+                    qty: location.qty
+                }
+                productsArray.push(productCopy)
+            })
+        })
+
+        setDataProducts(productsArray)
     }
 
     const getRequestProduct = async () => {
@@ -39,7 +60,6 @@ const Page = () => {
             setDataRequest(productsResult.payload?.data?.data)
         } else {
             const productsResult = await dispatch(requests.getRequestByUser(localStorage.getItem('iduser')))
-            console.log(productsResult.payload)
             setDataRequest(productsResult.payload?.data?.data)
         }
     }
@@ -99,7 +119,7 @@ const Page = () => {
                             {dataProducts?.map((item, index) => (<tr key={index}>
                                 <td>{item.name}</td>
                                 <td>{item.category}</td>
-                                <td>{item.Location?.name}</td>
+                                <td>{item.location}</td>
                                 <td>
                           <span
                               className="badge badge-primary"
@@ -132,7 +152,7 @@ const Page = () => {
                         {data?.map((item, index) => (<tr key={index}>
                             <td>{item.applicantStaff}</td>
                             <td>{moment(item.requestDate).format("MMMM Do YYYY")}</td>
-                            <td>{item.Location?.name}</td>
+                            <td>{...item.Carts.map((cart) => (cart.Location?.name)).join(', ')}</td>
                             <td>{item.orderStatus == "pending" ? "-" : moment(item.confirmTime).format("MMMM DD YYYY")}</td>
                             {roleUser !== "admin" && (<td>
                                     <span
@@ -182,12 +202,10 @@ const Page = () => {
                             <td>{item?.Product?.category}</td>
                             <td>{item.quantity}</td>
                             <td>{item.uom}</td>
-
                             <td>{moment(item.createdAt).format("MMMM Do YYYY")}</td>
-                            {localStorage.getItem("role") == "admin" ? (<></>) : (<td>
-                                {" "}
+                            {localStorage.getItem("role") === "admin" ? (<></>) : (<td>
                                 <span
-                                    className={`${item.status == "out_stock" ? "badge badge-error" : "badge badge-success"}`}
+                                    className={`${item.status === "out_stock" ? "badge badge-success" : "badge badge-error"}`}
                                 >
                           {item.status}
                         </span>

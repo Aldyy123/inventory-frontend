@@ -19,8 +19,6 @@ const Orders = () => {
     const [selectedOption2, setSelectedOption2] = useState("");
     const [name, setName] = useState("");
 
-    console.log(orderData.orders)
-
     const handleOptionChange = (value) => {
         setSelectedOption(value);
     };
@@ -59,12 +57,13 @@ const Orders = () => {
                 data: {
                     ProductId: itemProduct.id,
                     quantity: itemProduct.quantity,
-                    LocationId: itemProduct.Location?.id,
+                    LocationId: itemProduct.locationId,
                     uom: itemProduct.uom,
                     OrderId: orders?.data?.id,
                     UserId: localStorage.getItem('iduser'),
                 },
             }
+
             const result = await dispatch(carts.createCart(data))
 
             if(result.payload?.data?.data){
@@ -86,7 +85,7 @@ const Orders = () => {
                     activity: selectedOption,
                     division: selectedOption2,
                     machine: machine,
-                    LocationId: orderData?.orders?.map((item) => item?.Location?.id)?.[0],
+                    LocationId: orderData?.orders?.map((item) => item?.locationId)?.[0],
                     ProductId: orderData?.orders?.map((item) => item?.id)?.[0],
                 }
             }
