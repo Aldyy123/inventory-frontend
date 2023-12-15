@@ -1,10 +1,7 @@
 "use client";
 import Layouts from "../../components/layouts";
-import { getAllOrders } from "../../api";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { addToOrder } from "../../stores/action/addCart";
 import moment from "moment";
 import { Messaege } from "../../helper/Message";
 import { orders } from "../../stores/thunk";
@@ -43,7 +40,6 @@ const Page = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      // Call the function to perform the search here
       getAllOrders();
     }
   };

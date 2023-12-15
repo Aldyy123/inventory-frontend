@@ -1,5 +1,4 @@
 "use client";
-import { getAllStocks } from "../../api";
 import Layouts from "../../components/layouts";
 import { useEffect, useState } from "react";
 import moment from "moment";

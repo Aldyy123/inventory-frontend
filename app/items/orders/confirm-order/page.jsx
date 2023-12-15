@@ -1,7 +1,6 @@
 "use client";
 import {Messaege} from "../../../helper/Message";
 import Layouts from "../../../components/layouts";
-import {postOrder} from "../../../api";
 import {useState} from "react";
 import {useRouter, useSearchParams} from "next/navigation";
 import {useDispatch, useSelector} from "react-redux";

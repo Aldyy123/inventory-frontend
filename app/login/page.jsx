@@ -3,12 +3,14 @@
 import Image from "next/image";
 import logo from "../../public/logo.png";
 import { useRouter } from "next/navigation";
-import { login } from "../../app/api";
 import { useState } from "react";
 import { Messaege } from "../helper/Message";
+import {useDispatch} from "react-redux";
+import {users} from "../stores/thunk";
 
 const Login = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassowrd] = useState("");
 
@@ -16,15 +18,18 @@ const Login = () => {
     try {
       e.preventDefault();
       e.preventDefault();
-      const response = await login({
+      const response = await dispatch(users.loginUser({
         username,
         password,
-      });
-      localStorage.setItem("token", response.data.data.token);
-      localStorage.setItem("nama", response.data.data.nama);
-      localStorage.setItem("position", response.data.data.position);
-      localStorage.setItem("role", response.data.data.role);
-      localStorage.setItem("iduser", response.data.data.id);
+      }));
+
+      if(response?.payload?.data){
+        localStorage.setItem("token", response.payload.data.data.token);
+        localStorage.setItem("nama", response.payload.data.data.nama);
+        localStorage.setItem("position", response.payload.data.data.position);
+        localStorage.setItem("role", response.payload.data.data.role);
+        localStorage.setItem("iduser", response.payload.data.data.id);
+      }
 
       Messaege("Succes", "Success Login", "success");
       setTimeout(() => {

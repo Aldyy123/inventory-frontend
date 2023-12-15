@@ -1,14 +1,11 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { postStoks, register } from "../../../api";
 import Layouts from "../../../components/layouts";
-import Link from "next/link";
 import { Messaege } from "../../../helper/Message";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addRequest } from "../../../stores/thunk/requests";
 import { getAllProducts, getProducyById } from "../../../stores/thunk/products";
-import { getAllLocations } from "../../../stores/thunk/locations";
 
 const Employee = () => {
   const router = useRouter();
