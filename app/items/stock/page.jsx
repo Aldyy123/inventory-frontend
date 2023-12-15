@@ -1,10 +1,8 @@
 "use client";
 import Layouts from "../../components/layouts";
-import {getAllStocks} from "../../api";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {useDispatch} from "react-redux";
-import {addToCart} from "../../stores/action/addCart";
 import {Messaege} from "../../helper/Message";
 import {products} from "../../stores/thunk/index";
 import Link from "next/link";
@@ -13,6 +11,7 @@ const Page = () => {
     const dispatch = useDispatch();
     const [data, setData] = useState([]);
     const [search, setSearch] = useState("");
+    const router = useRouter();
 
     const getAllProducts = async () => {
         try {
@@ -46,9 +45,7 @@ const Page = () => {
             const {Locations, ...restData} = product
             product.Locations.map((location) => {
                 productsArray.push({
-                    locationName: location.name,
-                    qty: location.qty,
-                    ...restData
+                    locationName: location.name, qty: location.qty, ...restData
                 })
             });
         })
@@ -66,107 +63,71 @@ const Page = () => {
         }
     };
 
+    const onClickOrder = (item) => {
+        router.push(`/items/orders/${item.id}`)
+    }
 
-    return (
-        <Layouts>
-            <div className="container">
-                <div>
-                    <h1>Stock</h1>
+    return (<Layouts>
+        <div className="container">
+            <div>
+                <h1>Stock</h1>
 
-                    <div className="card">
-                        <h5>List of items</h5>
+                <div className="card">
+                    <div className="filter-table">
+                        <label htmlFor="" className="mr-3">
+                            Search
+                        </label>
+                        <input
+                            type="text"
+                            className="search"
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                        />
+                    </div>
 
-                        <div className="filter-table">
-              <span>
-                <label htmlFor="" className="mr-3">
-                  Show
-                </label>
-                <select name="show" id="" className="mr-3">
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                </select>
-                entries
-              </span>
-                            <span>
-                <label htmlFor="" className="mr-3">
-                  Search
-                </label>
-                <input
-                    type="text"
-                    className="search"
-                    onChange={(e) => setSearch(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                />
-              </span>
-                        </div>
-
-                        <table className="mt-4">
-                            <thead>
-                            <tr>
-                                <th>Name of Product</th>
-                                <th>Category</th>
-                                <th>QTY</th>
-                                <th>UOM</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {data?.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item.name}</td>
-                                    <td>{item.category}</td>
-                                    <td>{item.qty}</td>
-                                    <td>{item.uom}</td>
-                                    <td>
+                    <table className="mt-4">
+                        <thead>
+                        <tr>
+                            <th>Name of Product</th>
+                            <th>Category</th>
+                            <th>QTY</th>
+                            <th>Location</th>
+                            <th>UOM</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {data?.map((item, index) => (<tr key={index}>
+                            <td>{item.name}</td>
+                            <td>{item.category}</td>
+                            <td>{item.qty}</td>
+                            <td>{item.locationName}</td>
+                            <td>{item.uom}</td>
+                            <td>
                       <span
-                          className={`badge ${
-                              item.qty > 0 ? "badge-success" : "badge-error"
-                          }`}
+                          className={`badge ${item.qty > 0 ? "badge-success" : "badge-error"}`}
                       >
                         {item.qty > 0 ? "Available" : "out of stock"}
                       </span>
-                                    </td>
-                                    {localStorage.getItem("role") === "admin" ? (
-                                        <td>
-                                            <Link href={`/items/stock/edit/${item.id}`}>
-                            <span
-                                className="badge badge-primary"
-                                style={{color: "white", cursor: "pointer"}}
-                            >
-                                Edit Stock
-                            </span>
-                                            </Link>
-                                        </td>
-                                    ) : (
-                                        <td>
-                                            <Link href={`/items/orders/${item.id}`}>
-                            <span
-                                className="badge badge-primary"
-                                style={{color: "white", cursor: "pointer"}}
-                            >
-                                Order Item
-                            </span>
-                                            </Link>
-                                        </td>
-                                    )}
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
-
-                        <div className="mt-2 pagination">
-                            <span>Showing 1 to 2 out of 2 entries</span>
-                            <span>
-                <button type="button">Previous</button>
-                <button type="button">Next</button>
-              </span>
-                        </div>
-                    </div>
+                            </td>
+                            {localStorage.getItem("role") === "admin" ? (<td>
+                                <Link className={'btn btn-primary'} href={`/items/stock/edit/${item.id}`}>
+                                    Edit Stock
+                                </Link>
+                            </td>) : (<td>
+                                <button disabled={item.qty < 1} className={'btn btn-primary'}
+                                        onClick={() => onClickOrder(item)}>
+                                    Order Item
+                                </button>
+                            </td>)}
+                        </tr>))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </Layouts>
-    );
+        </div>
+    </Layouts>);
 };
 
 export default Page;

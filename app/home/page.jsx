@@ -56,10 +56,16 @@ const Page = () => {
 
     const getRequestProduct = async () => {
         if (localStorage.getItem('role') === 'admin') {
-            const productsResult = await dispatch(requests.getAllRequests())
+            const productsResult = await dispatch(requests.getAllRequests({
+                status: 'pending'
+            }))
             setDataRequest(productsResult.payload?.data?.data)
         } else {
-            const productsResult = await dispatch(requests.getRequestByUser(localStorage.getItem('iduser')))
+            const productsResult = await dispatch(requests.getRequestByUser({
+                user_id: localStorage.getItem('iduser'),
+                status: 'pending'
+            }))
+            console.log(productsResult.payload?.data?.data)
             setDataRequest(productsResult.payload?.data?.data)
         }
     }
@@ -122,7 +128,7 @@ const Page = () => {
                                 <td>{item.location}</td>
                                 <td>
                           <span
-                              className="badge badge-primary"
+                              className="btn btn-primary"
                               style={{color: "white", cursor: "pointer"}}
                               onClick={toEditPage}
                           >
@@ -165,7 +171,7 @@ const Page = () => {
                             <td>
                                 {roleUser === 'admin' && (
                                     <Link href={`/items/orders/detail/${item.id}`}
-                                          className="badge badge-primary"
+                                          className="btn btn-primary"
                                           style={{color: "white", cursor: "pointer"}}
                                           onClick={toEditPage2}
                                     >
@@ -205,7 +211,7 @@ const Page = () => {
                             <td>{moment(item.createdAt).format("MMMM Do YYYY")}</td>
                             {localStorage.getItem("role") === "admin" ? (<></>) : (<td>
                                 <span
-                                    className={`${item.status === "out_stock" ? "badge badge-error" : "badge badge-success"}`}
+                                    className={`${item.status === "pending" ? "badge badge-error" : "badge badge-success"}`}
                                 >
                           {item.status}
                         </span>

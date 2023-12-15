@@ -81,7 +81,6 @@ const Sidebar = () => {
         { label: "Stock", path: "/items/stock" },
         { label: "Requests Items", path: "/items/requests" },
         { label: "Orders Items Status", path: "/items/orders" },
-        { label: "Request Items Status", path: "/items/requeststatus" },
       ],
     },
   ];

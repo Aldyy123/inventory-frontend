@@ -4,8 +4,13 @@ import axios from "axios";
 
 const getRequestByUser = createAsyncThunk(
   "requests/getRequestByUser",
-  async (user_id) => {
+  async ({user_id, status}) => {
     try {
+
+        if(status){
+            return await axios.get(`${API.API_URL}/requests/user/${user_id}?status=${status}`);
+        }
+
       return await axios.get(`${API.API_URL}/requests/user/${user_id}`);
     } catch (e) {
       return e;
@@ -31,6 +36,10 @@ const getAllRequests = createAsyncThunk(
 
             if(payload?.user){
                 return await axios.get(`${API.API_URL}/requests?user=${payload?.user}`)
+            }
+
+            if(payload?.status){
+                return await axios.get(`${API.API_URL}/requests?status=${payload?.status}`)
             }
 
             return await axios.get(`${API.API_URL}/requests`)

@@ -70,27 +70,15 @@ const Requestsnpm = () => {
                     <h5>List of Requested Items</h5>
 
                     <div className="filter-table">
-              <span>
-                <label htmlFor="" className="mr-3">
-                  Show
-                </label>
-                <select name="show" id="" className="mr-3">
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                </select>
-                entries
-              </span>
-                        <span>
-                <label htmlFor="" className="mr-3">
-                  Search
-                </label>
-                <input
-                    type="text"
-                    className="search"
-                    onChange={e => setSearch(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                />
-              </span>
+                        <label htmlFor="" className="mr-3">
+                            Search
+                        </label>
+                        <input
+                            type="text"
+                            className="search"
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                        />
                     </div>
 
                     <table>
@@ -127,24 +115,17 @@ const Requestsnpm = () => {
 
                             {localStorage.getItem("role") === "admin" && (<td onClick={() => toEditPage(item.id)}>
                                 <button
-                                    className="badge btn btn-primary badge-primary"
-                                    disabled={item.status === "available"}
+                                    className="btn btn-primary"
+                                    disabled={item.status !== "pending"}
                                     style={{color: "white", cursor: "pointer"}}
                                 >
-                                  Add Stock
+                                    Add Stock
                                 </button>
                             </td>)}
                         </tr>))}
                         </tbody>
                     </table>
 
-                    <div className="mt-2 pagination">
-                        <span>Showing 1 to 2 out of 2 entries</span>
-                        <span>
-                <button type="button">Previous</button>
-                <button type="button">Next</button>
-              </span>
-                    </div>
                 </div>
             </div>
         </div>
