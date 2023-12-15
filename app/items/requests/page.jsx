@@ -1,5 +1,4 @@
 "use client";
-import {getAllStocks} from "../../api";
 import Layouts from "../../components/layouts";
 import {useEffect, useState} from "react";
 import moment from "moment";
@@ -18,7 +17,9 @@ const Requestsnpm = () => {
     const getAllRequest = async () => {
         try {
             if (search) {
-                const resultRequets = await dispatch(requests.getAllRequests(search))
+                const resultRequets = await dispatch(requests.getAllRequests({
+                    search
+                }))
                 if (resultRequets.payload?.data) {
                     setDataRequest(resultRequets.payload.data.data)
                     return
@@ -48,7 +49,6 @@ const Requestsnpm = () => {
 
     const handleKeyPress = (e) => {
         if (e.key === "Enter") {
-            // Call the function to perform the search here
             getAllRequest();
         }
     }
@@ -57,7 +57,7 @@ const Requestsnpm = () => {
         <div className="container">
             <div>
                 <h1>Requested Items</h1>
-                {localStorage.getItem("role") == "admin" ? (<></>) : (<div style={{width: "500px"}}>
+                {localStorage.getItem("role") === "admin" ? (<></>) : (<div style={{width: "500px"}}>
                     <button
                         type="button"
                         onClick={postRequest}
@@ -113,15 +113,19 @@ const Requestsnpm = () => {
                                 </td>
                             )}
 
-                            {localStorage.getItem("role") === "admin" && (<td onClick={() => toEditPage(item.id)}>
-                                <button
-                                    className="btn btn-primary"
-                                    disabled={item.status !== "pending"}
-                                    style={{color: "white", cursor: "pointer"}}
-                                >
-                                    Add Stock
-                                </button>
-                            </td>)}
+                            <td>
+                                {localStorage.getItem("role") === "admin" && (
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={() => toEditPage(item.id)}
+                                        disabled={item.status !== "pending"}
+                                        style={{color: "white", cursor: "pointer"}}
+                                    >
+                                        Add Stock
+                                    </button>
+                                )}
+                            </td>
+
                         </tr>))}
                         </tbody>
                     </table>

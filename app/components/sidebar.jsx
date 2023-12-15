@@ -67,6 +67,11 @@ const Sidebar = () => {
         { label: "Add Employee", path: "/employee/add-employee" },
       ],
     },
+    {
+      label: "History",
+      path: "/history",
+      icon: "history",
+    },
   ];
   const menuData2 = [
     {
@@ -101,7 +106,7 @@ const Sidebar = () => {
         )}
       </ul> */}
       <ul>
-        {localStorage.getItem("role") == "employee"
+        {localStorage.getItem("role") === "employee"
           ? menuData2.map((item, index) => <MenuItem key={index} item={item} />)
           : menuData.map((item, index) => <MenuItem key={index} item={item} />)}
       </ul>

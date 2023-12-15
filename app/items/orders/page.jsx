@@ -12,7 +12,6 @@ import Link from "next/link";
 
 const Page = () => {
   const dispatch = useDispatch();
-  const router = useRouter();
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -21,9 +20,7 @@ const Page = () => {
       if (search) {
         const result = await dispatch(orders.getAllOrders(search));
         if (result.payload?.data) {
-          // setData(result.payload.data.data)
-          tidyFieldOrders(result.payload.data.data);
-
+          setData(result.payload.data.data)
           return;
         }
         throw { message: result.payload?.response?.data?.message };
@@ -32,34 +29,12 @@ const Page = () => {
       const result = await dispatch(orders.getAllOrders());
       if (result.payload?.data) {
         setData(result.payload.data.data);
-        // tidyFieldOrders(result.payload.data.data)
         return;
       }
       throw { message: result.payload?.response?.data?.message };
     } catch (error) {
       Messaege("error", error.message, "error");
     }
-  };
-
-  const tidyFieldOrders = (orders) => {
-    const ordersArray = [];
-
-    orders.forEach((order) => {
-      order.Carts.map((cart) => {
-        const cartObject = {
-          id: order.id,
-          applicantStaff: order.applicantStaff,
-          requestDate: order.createdAt,
-          orderStatus: order.orderStatus,
-          quantity: cart.quantity,
-          location: cart?.Location?.name,
-        };
-        ordersArray.push(cartObject);
-      });
-    });
-
-    console.log(ordersArray);
-    setData(ordersArray);
   };
 
   useEffect(() => {
@@ -108,9 +83,9 @@ const Page = () => {
                     <td>{item.applicantStaff}</td>
                     <td>{moment(item.requestDate).format("MMM Do YYYY")}</td>
                     <td>
-                      {...item.Carts.map((cart) => cart.Location?.name).join(
+                      {...item.Carts?.map((cart) => cart.Location?.name).join(
                           ", "
-                      )}
+                      ) || ''}
                     </td>
                     <td>
                       <span
